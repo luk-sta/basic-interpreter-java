@@ -18,4 +18,16 @@ public final class Line {
         this.commands = commands;
         this.rawText = rawText;
     }
+
+    public int getLineNumber() {
+        return lineNumber;
+    }
+
+    public List<Command> getCommands() {
+        return commands;
+    }
+
+    public String getRawText() {
+        return rawText;
+    }
 }

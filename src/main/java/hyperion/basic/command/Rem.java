@@ -5,5 +5,4 @@ package hyperion.basic.command;
  * @since 06.03.21
  */
 public class Rem implements Command {
-    public static final String NAME = "REM";
 }

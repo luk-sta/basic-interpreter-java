@@ -21,9 +21,9 @@ public class BasicInterpreter {
 
     public static void main(String[] args) {
         Console console = System.console();
-        System.out.print("READY.");
-        CommandExecutor commandExecutor = new CommandExecutor();
-        CommandsHolder commandsHolder = new CommandsHolder();
+        System.out.println("READY.");
+        ProgramLinesHolder programLinesHolder = new ProgramLinesHolder();
+        CommandExecutor commandExecutor = new CommandExecutor(programLinesHolder);
 
         String line;
         while ((line = console.readLine()) != null) {
@@ -36,7 +36,7 @@ public class BasicInterpreter {
                     String commandsString = line.substring(lineNumberString.length());
                     try {
                         List<Command> commands = createCommands(commandsString);
-                        commandsHolder.add(lineNumber, commands, line);
+                        programLinesHolder.add(lineNumber, commands, line);
                     } catch (SyntaxError e) {
                         throw new SyntaxError(lineNumberString);
                     }
@@ -47,7 +47,7 @@ public class BasicInterpreter {
             } catch (GeneralException e) {
                 System.out.println(e.getMessage());
             }
-            System.out.print("READY.");
+            System.out.println("READY.");
         }
     }
 

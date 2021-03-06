@@ -8,7 +8,8 @@ public enum CommandEnum {
     REM(Rem.class),
     PRINT(Print.class),
     RUN(Run.class),
-    LET(Let.class);
+    LET(Let.class),
+    LIST(List.class);
 
     private final Class<? extends Command> commandClass;
 
