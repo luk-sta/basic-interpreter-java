@@ -10,7 +10,8 @@ public enum CommandEnum {
     RUN(Run.class),
     LET(Let.class),
     LIST(List.class),
-    GOTO(Goto.class);
+    GOTO(Goto.class),
+    NEW(New.class);
 
     private final Class<? extends Command> commandClass;
 
