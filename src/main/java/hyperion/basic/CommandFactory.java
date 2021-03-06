@@ -13,6 +13,7 @@ import hyperion.basic.error.GeneralException;
 public class CommandFactory {
     public static Command create(String commandString) throws GeneralException {
         commandString = commandString.trim();
+        
         for (CommandEnum commandEnum : CommandEnum.values()) {
             if (commandString.startsWith(commandEnum.name())) {
                 String params = commandString.substring(commandEnum.name().length());

@@ -23,7 +23,8 @@ public class BasicInterpreter {
         Console console = System.console();
         System.out.println("READY.");
         ProgramLinesHolder programLinesHolder = new ProgramLinesHolder();
-        CommandExecutor commandExecutor = new CommandExecutor(programLinesHolder);
+        VariablesField variablesField = new VariablesField();
+        CommandExecutor commandExecutor = new CommandExecutor(programLinesHolder, variablesField);
 
         String line;
         while ((line = console.readLine()) != null) {

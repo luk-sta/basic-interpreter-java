@@ -2,35 +2,38 @@ package hyperion.basic.command;
 
 import hyperion.basic.error.SyntaxError;
 
+import java.util.function.Predicate;
+
 /**
  * @author Lukas Stanek
  * @since 06.03.21
  */
 public class List implements Command {
-    public static final int MIN_LINE_NUMBER = 0;
-    public static final int MAX_LINE_NUMBER = 63999;
-    private final int from;
-    private final int to;
+    private final Predicate<Integer> insideInterval;
 
     public List(String params) throws SyntaxError {
         String[] split = params.split("-", 2);
-        if (split.length < 2) {
-            from = MIN_LINE_NUMBER;
-            to = MAX_LINE_NUMBER;
-        } else {
-            from = (split[0].isEmpty()) ? MIN_LINE_NUMBER : Integer.parseInt(split[0]);
-            to = (split[1].isEmpty()) ? MAX_LINE_NUMBER : Integer.parseInt(split[1]);
-            if (from < MIN_LINE_NUMBER || from > MAX_LINE_NUMBER || to < MIN_LINE_NUMBER || to > MAX_LINE_NUMBER) {
-                throw new SyntaxError();
+        String s0 = split[0].trim();
+        try {
+            if (split.length < 2) {
+                if (s0.isEmpty()) {
+                    insideInterval = l -> true;
+                } else {
+                    int lineNum = Integer.parseInt(s0);
+                    insideInterval = l -> l == lineNum;
+                }
+            } else {
+                Predicate<Integer> p1 = (s0.isEmpty()) ? l -> true : l -> l >= Integer.parseInt(s0);
+                String s1 = split[1].trim();
+                Predicate<Integer> p2 = (s1.isEmpty()) ? l -> true : l -> l <= Integer.parseInt(s1);
+                insideInterval = p1.and(p2);
             }
+        } catch (NumberFormatException e) {
+            throw new SyntaxError();
         }
     }
 
-    public int getFrom() {
-        return from;
-    }
-
-    public int getTo() {
-        return to;
+    public Predicate<Integer> getInsideInterval() {
+        return insideInterval;
     }
 }

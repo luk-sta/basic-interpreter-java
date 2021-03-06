@@ -9,7 +9,8 @@ public enum CommandEnum {
     PRINT(Print.class),
     RUN(Run.class),
     LET(Let.class),
-    LIST(List.class);
+    LIST(List.class),
+    GOTO(Goto.class);
 
     private final Class<? extends Command> commandClass;
 
