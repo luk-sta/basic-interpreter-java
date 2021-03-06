@@ -1,6 +1,6 @@
 package hyperion.basic;
 
-import hyperion.basic.commands.Command;
+import hyperion.basic.command.Command;
 
 import java.util.List;
 

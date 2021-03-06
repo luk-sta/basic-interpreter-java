@@ -1,6 +1,8 @@
 package hyperion.basic;
 
-import hyperion.basic.commands.Command;
+import hyperion.basic.command.Command;
+import hyperion.basic.error.GeneralException;
+import hyperion.basic.error.SyntaxError;
 
 import java.io.Console;
 import java.util.ArrayList;
@@ -26,22 +28,30 @@ public class BasicInterpreter {
         String line;
         while ((line = console.readLine()) != null) {
             line = line.toUpperCase();
-            Matcher matcher = BEGIN_NUMBER.matcher(line);
-            if (matcher.find()) {
-                String lineNumberString = matcher.group();
-                int lineNumber = Integer.parseInt(lineNumberString);
-                String commandsString = line.substring(lineNumberString.length());
-                List<Command> commands = createCommands(commandsString);
-                commandsHolder.add(lineNumber, commands, line);
-            } else {
-                List<Command> commands = createCommands(line);
-                commands.forEach(commandExecutor::exec);
+            try {
+                Matcher matcher = BEGIN_NUMBER.matcher(line);
+                if (matcher.find()) {
+                    String lineNumberString = matcher.group();
+                    int lineNumber = Integer.parseInt(lineNumberString);
+                    String commandsString = line.substring(lineNumberString.length());
+                    try {
+                        List<Command> commands = createCommands(commandsString);
+                        commandsHolder.add(lineNumber, commands, line);
+                    } catch (SyntaxError e) {
+                        throw new SyntaxError(lineNumberString);
+                    }
+                } else {
+                    List<Command> commands = createCommands(line);
+                    commands.forEach(commandExecutor::exec);
+                }
+            } catch (GeneralException e) {
+                System.out.println(e.getMessage());
             }
             System.out.print("READY.");
         }
     }
 
-    private static List<Command> createCommands(String commandsString) {
+    private static List<Command> createCommands(String commandsString) throws GeneralException {
         List<String> commandStrings = splitCommandsString(commandsString);
         List<Command> commands = new ArrayList<>(commandStrings.size());
         for (String commandString : commandStrings) {
