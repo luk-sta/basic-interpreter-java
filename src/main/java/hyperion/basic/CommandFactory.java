@@ -6,8 +6,9 @@ import hyperion.basic.commands.Command;
  * @author Lukas Stanek
  * @since 06.03.21
  */
-public class CommandExecutor {
-    public void exec(Command command) {
+public class CommandFactory {
+    public static Command create(String commandString) {
         //TODO
+        return null;
     }
 }

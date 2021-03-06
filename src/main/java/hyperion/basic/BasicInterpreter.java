@@ -1,6 +1,9 @@
 package hyperion.basic;
 
+import hyperion.basic.commands.Command;
+
 import java.io.Console;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -22,27 +25,37 @@ public class BasicInterpreter {
 
         String line;
         while ((line = console.readLine()) != null) {
+            line = line.toUpperCase();
             Matcher matcher = BEGIN_NUMBER.matcher(line);
             if (matcher.find()) {
                 String lineNumberString = matcher.group();
                 int lineNumber = Integer.parseInt(lineNumberString);
-                String commandString = line.substring(lineNumberString.length());
-                List<String> commands = splitCommandString(commandString);
-                commandsHolder.add(lineNumber, commands);
+                String commandsString = line.substring(lineNumberString.length());
+                List<Command> commands = createCommands(commandsString);
+                commandsHolder.add(lineNumber, commands, line);
             } else {
-                List<String> commands = splitCommandString(line);
+                List<Command> commands = createCommands(line);
                 commands.forEach(commandExecutor::exec);
             }
             System.out.print("READY.");
         }
     }
 
-    private static List<String> splitCommandString(String commandString) {
+    private static List<Command> createCommands(String commandsString) {
+        List<String> commandStrings = splitCommandsString(commandsString);
+        List<Command> commands = new ArrayList<>(commandStrings.size());
+        for (String commandString : commandStrings) {
+            Command command = CommandFactory.create(commandString);
+            commands.add(command);
+        }
+        return commands;
+    }
+
+    private static List<String> splitCommandsString(String commandsString) {
         List<String> result = new LinkedList<>();
-        String uCommandString = commandString.toUpperCase();
         StringBuilder sb = new StringBuilder();
         boolean insideQuoted = false;
-        for (char c : uCommandString.toCharArray()) {
+        for (char c : commandsString.toCharArray()) {
             switch (c) {
                 case '"':
                     insideQuoted = !insideQuoted;
