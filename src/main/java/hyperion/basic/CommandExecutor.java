@@ -1,9 +1,14 @@
 package hyperion.basic;
 
 import hyperion.basic.command.Command;
+import hyperion.basic.command.Cont;
+import hyperion.basic.command.End;
+import hyperion.basic.command.Goto;
 import hyperion.basic.command.List;
 import hyperion.basic.command.New;
+import hyperion.basic.command.Rem;
 import hyperion.basic.command.Run;
+import hyperion.basic.command.Stop;
 
 import java.util.Iterator;
 
@@ -35,17 +40,24 @@ public class CommandExecutor {
             programLinesHolder.init();
             variablesField.clear();
             lineNumbersIterator = programLinesHolder.lineNumberIterator(0);
-            while (lineNumbersIterator.hasNext()) {
-                Integer next = lineNumbersIterator.next();
-                Line line = programLinesHolder.get(next);
-                for (Command lineCommand : line.getCommands()) {
-                    boolean cont = exec(lineCommand);
-                    if (!cont) {
-                        return false;
-                    }
-                }
-            }
+            return go();
+        }
+        if (command instanceof Cont) {
+            return go();
+        }
+        if (command instanceof Goto) {
+            Goto cmd = (Goto) command;
+            lineNumbersIterator = programLinesHolder.lineNumberIterator(cmd.getLineNum());
+            return go();
+        }
+        if (command instanceof Stop) {
             return false;
+        }
+        if (command instanceof End) {
+            return false;
+        }
+        if (command instanceof Rem) {
+            return true;
         }
         if (command instanceof New) {
             variablesField.clear();
@@ -53,6 +65,20 @@ public class CommandExecutor {
             return false;
         }
         // TODO
+        return true;
+    }
+
+    private boolean go() {
+        while (lineNumbersIterator.hasNext()) {
+            Integer next = lineNumbersIterator.next();
+            Line line = programLinesHolder.get(next);
+            for (Command lineCommand : line.getCommands()) {
+                boolean cont = exec(lineCommand);
+                if (!cont) {
+                    return false;
+                }
+            }
+        }
         return true;
     }
 }

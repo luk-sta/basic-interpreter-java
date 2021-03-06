@@ -11,7 +11,8 @@ public enum CommandEnum {
     LET(Let.class),
     LIST(List.class),
     GOTO(Goto.class),
-    NEW(New.class);
+    NEW(New.class),
+    STOP(Stop.class);
 
     private final Class<? extends Command> commandClass;
 
